@@ -1,0 +1,1877 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gabi Aharon</title>
+  <meta
+    name="description"
+    content="Manager · Public Speaking Lecturer · AI Creator"
+  />
+  <meta property="og:title" content="Gabi Aharon" />
+  <meta
+    property="og:description"
+    content="Manager · Public Speaking Lecturer · AI Creator"
+  />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      --accent: #dba44a;
+      --accent-rgb: 219, 164, 74;
+      --bg: #05070b;
+      --text: #f5f0e8;
+      --muted: rgba(245, 240, 232, 0.68);
+      --line: rgba(255, 255, 255, 0.16);
+      --panel: rgba(8, 11, 17, 0.58);
+      --ambient-rgb: 219, 164, 74;
+      --dock-rgb: 219, 164, 74;
+      --overlay-left: rgba(2, 4, 8, 0.9);
+      --overlay-center: rgba(2, 4, 8, 0.42);
+      --overlay-right: rgba(2, 4, 8, 0.68);
+      --overlay-bottom: rgba(0, 0, 0, 0.82);
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --safe-top: max(18px, env(safe-area-inset-top));
+      --safe-bottom: max(18px, env(safe-area-inset-bottom));
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Assistant", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      position: relative;
+    }
+
+    button,
+    a {
+      color: inherit;
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      background: none;
+      cursor: pointer;
+    }
+
+    #app {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      background: radial-gradient(circle at 50% 20%, rgba(var(--accent-rgb), 0.12), transparent 32%), #04060a;
+    }
+
+    #app::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 78% 24%, rgba(var(--ambient-rgb), 0.16), transparent 26%),
+        radial-gradient(circle at 18% 82%, rgba(var(--dock-rgb), 0.11), transparent 24%),
+        linear-gradient(180deg, transparent 0%, rgba(4, 7, 12, 0.08) 70%, rgba(4, 7, 12, 0.26) 100%);
+      transition: background 420ms ease;
+    }
+
+    .bg-layer,
+    .bg-image,
+    .transition-video,
+    .overlay,
+    .grain,
+    .flash {
+      position: absolute;
+      inset: 0;
+    }
+
+    .bg-layer {
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .bg-image {
+      background-position: center center;
+      background-size: cover;
+      opacity: 0;
+      transform: scale(1.04);
+      transition:
+        opacity 900ms var(--ease),
+        transform 1400ms var(--ease),
+        filter 700ms var(--ease);
+      filter: saturate(0.96) contrast(0.94);
+    }
+
+    .bg-image.active {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    html[dir="rtl"] .bg-image {
+      transform: scaleX(-1) scale(1.04);
+      transform-origin: center center;
+    }
+
+    html[dir="rtl"] .bg-image.active {
+      transform: scaleX(-1) scale(1);
+    }
+
+    .transition-video {
+      z-index: 3;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      pointer-events: none;
+      background: #05070b;
+      transition: opacity 260ms ease;
+    }
+
+    html[dir="rtl"] .transition-video {
+      transform: scaleX(-1);
+      transform-origin: center center;
+    }
+
+    .transition-video.visible {
+      opacity: 1;
+    }
+
+    .transition-video::-webkit-media-controls {
+      display: none !important;
+      -webkit-appearance: none;
+    }
+
+    .transition-video::-webkit-media-controls-enclosure,
+    .transition-video::-webkit-media-controls-panel,
+    .transition-video::-webkit-media-controls-play-button,
+    .transition-video::-webkit-media-controls-start-playback-button,
+    .transition-video::-webkit-media-controls-timeline,
+    .transition-video::-webkit-media-controls-current-time-display,
+    .transition-video::-webkit-media-controls-time-remaining-display,
+    .transition-video::-webkit-media-controls-mute-button,
+    .transition-video::-webkit-media-controls-volume-slider,
+    .transition-video::-webkit-media-controls-fullscreen-button,
+    .transition-video::-webkit-media-controls-overlay-play-button {
+      display: none !important;
+      -webkit-appearance: none;
+      opacity: 0 !important;
+      visibility: hidden !important;
+    }
+
+    .overlay {
+      z-index: 2;
+      pointer-events: none;
+      background:
+        linear-gradient(90deg, var(--overlay-left) 0%, var(--overlay-center) 34%, rgba(2, 4, 8, 0.2) 60%, var(--overlay-right) 100%),
+        linear-gradient(180deg, rgba(0, 0, 0, 0.12) 0%, rgba(0, 0, 0, 0.1) 42%, var(--overlay-bottom) 100%);
+      transition: background 420ms ease;
+    }
+
+    .grain {
+      z-index: 2;
+      pointer-events: none;
+      opacity: 0.12;
+      mix-blend-mode: soft-light;
+      background-image:
+        linear-gradient(transparent 0%, rgba(255, 255, 255, 0.03) 50%, transparent 100%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.3'/%3E%3C/svg%3E");
+    }
+
+    .flash {
+      z-index: 6;
+      pointer-events: none;
+      opacity: 0;
+      background:
+        radial-gradient(circle at center, rgba(var(--accent-rgb), 0.18), transparent 34%),
+        linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    }
+
+    .chrome {
+      position: relative;
+      z-index: 4;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 100%;
+      height: 100%;
+      padding:
+        calc(var(--safe-top) + 24px)
+        clamp(18px, 3vw, 38px)
+        calc(var(--safe-bottom) + 22px);
+    }
+
+    .topbar,
+    .bottombar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .topbar-side {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .bottombar {
+      position: relative;
+      isolation: isolate;
+    }
+
+    .bottombar::before {
+      content: "";
+      position: absolute;
+      inset: auto -10px -10px -10px;
+      height: 86px;
+      z-index: -1;
+      opacity: 0;
+      border-radius: 28px;
+      border: 1px solid rgba(var(--dock-rgb), 0.16);
+      background:
+        radial-gradient(circle at 50% 12%, rgba(var(--dock-rgb), 0.18), transparent 58%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(5, 8, 13, 0.72));
+      box-shadow:
+        0 12px 28px rgba(0, 0, 0, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(14px);
+      transition:
+        opacity 320ms ease,
+        border-color 320ms ease,
+        background 320ms ease;
+    }
+
+    .brand {
+      font-family: "Assistant", sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+      letter-spacing: 0.2em;
+      color: rgba(255, 255, 255, 0.76);
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .counter {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-family: "Assistant", sans-serif;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      color: rgba(255, 255, 255, 0.62);
+      text-transform: uppercase;
+      direction: ltr;
+    }
+
+    .counter strong {
+      color: var(--text);
+      font-weight: 400;
+    }
+
+    .lang-switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02)),
+        rgba(8, 11, 16, 0.48);
+      backdrop-filter: blur(14px);
+      box-shadow:
+        0 8px 18px rgba(0, 0, 0, 0.16),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+
+    .lang-btn {
+      min-width: 46px;
+      height: 34px;
+      padding: 0 14px;
+      border-radius: 999px;
+      color: rgba(255, 255, 255, 0.68);
+      font-family: "Assistant", sans-serif;
+      font-weight: 800;
+      font-size: 0.84rem;
+      letter-spacing: 0.08em;
+      transition:
+        color 220ms ease,
+        background 220ms ease,
+        box-shadow 220ms ease,
+        transform 220ms ease;
+    }
+
+    .lang-btn:hover,
+    .lang-btn:focus-visible {
+      color: rgba(255, 255, 255, 0.92);
+      background: rgba(255, 255, 255, 0.06);
+      outline: none;
+    }
+
+    .lang-btn.active {
+      color: #fff;
+      background:
+        radial-gradient(circle at 50% 18%, rgba(var(--accent-rgb), 0.24), transparent 68%),
+        rgba(255, 255, 255, 0.08);
+      box-shadow:
+        0 10px 20px rgba(0, 0, 0, 0.18),
+        0 0 0 1px rgba(var(--accent-rgb), 0.12);
+    }
+
+    .divider {
+      width: 40px;
+      height: 1px;
+      background: var(--line);
+    }
+
+    .stage {
+      position: relative;
+      display: grid;
+      align-items: end;
+      min-height: 0;
+      flex: 1;
+      padding: clamp(18px, 5vw, 44px) 0;
+    }
+
+    .content {
+      position: relative;
+      max-width: min(640px, 100%);
+      margin-inline-start: clamp(46px, 5vw, 84px);
+      padding: clamp(18px, 2.2vw, 28px);
+      border-radius: 32px;
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      background:
+        linear-gradient(140deg, rgba(255, 255, 255, 0.08), transparent 40%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 34%),
+        rgba(6, 9, 14, 0.68);
+      backdrop-filter: blur(22px);
+      box-shadow:
+        0 24px 80px rgba(0, 0, 0, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      cursor: pointer;
+      transition:
+        opacity 520ms var(--ease),
+        transform 520ms var(--ease),
+        border-color 240ms ease,
+        box-shadow 240ms ease,
+        background 320ms ease;
+      overflow: hidden;
+    }
+
+    .content::before,
+    .content::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      transition:
+        opacity 320ms ease,
+        background 320ms ease,
+        transform 420ms ease;
+    }
+
+    .content::before {
+      opacity: 0.9;
+      background:
+        radial-gradient(circle at 12% 16%, rgba(var(--accent-rgb), 0.16), transparent 24%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 30%);
+    }
+
+    .content::after {
+      inset: auto -12% -34% 34%;
+      height: 72%;
+      opacity: 0.34;
+      background: radial-gradient(circle, rgba(var(--accent-rgb), 0.18), transparent 62%);
+      transform: translateY(8%);
+    }
+
+    .content:hover,
+    .content:focus-visible {
+      transform: translateY(-4px);
+      border-color: rgba(var(--accent-rgb), 0.36);
+      box-shadow:
+        0 28px 90px rgba(0, 0, 0, 0.34),
+        0 0 0 1px rgba(var(--accent-rgb), 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      outline: none;
+    }
+
+    #app[data-world="body"] .content {
+      background:
+        linear-gradient(145deg, rgba(220, 172, 92, 0.06), transparent 36%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 34%),
+        rgba(8, 10, 14, 0.68);
+    }
+
+    #app[data-world="body"] .label {
+      border-color: rgba(224, 181, 98, 0.18);
+      background: rgba(224, 181, 98, 0.08);
+    }
+
+    html[dir="rtl"] #app[data-world="body"] .content {
+      padding-block: clamp(20px, 2.4vw, 28px);
+      padding-inline-start: 34px;
+      padding-inline-end: 20px;
+    }
+
+    html[dir="rtl"] #app[data-world="body"] .number-bg {
+      inset-inline-end: 18px;
+      top: 6px;
+      font-size: clamp(6rem, 16vw, 10rem);
+    }
+
+    html[dir="rtl"] #app[data-world="body"] .title {
+      font-size: clamp(3.6rem, 9vw, 5.8rem);
+      line-height: 0.88;
+      margin-bottom: 8px;
+    }
+
+    html[dir="rtl"] #app[data-world="body"] .subtitle {
+      max-width: none;
+      white-space: nowrap;
+      font-size: clamp(0.92rem, 1.2vw, 1.02rem);
+      line-height: 1.35;
+      margin-bottom: 14px;
+    }
+
+    #app[data-world="ai"] .content {
+      border-color: rgba(88, 217, 255, 0.18);
+      background:
+        linear-gradient(145deg, rgba(76, 225, 255, 0.1), transparent 34%),
+        linear-gradient(180deg, rgba(180, 245, 255, 0.03), transparent 42%),
+        rgba(4, 12, 18, 0.74);
+      box-shadow:
+        0 24px 80px rgba(0, 0, 0, 0.28),
+        0 0 0 1px rgba(76, 225, 255, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    #app[data-world="ai"] .content::before {
+      background:
+        radial-gradient(circle at 10% 18%, rgba(88, 217, 255, 0.22), transparent 24%),
+        linear-gradient(120deg, transparent 0%, rgba(88, 217, 255, 0.06) 44%, transparent 72%);
+    }
+
+    #app[data-world="ai"] .content::after {
+      opacity: 0.44;
+      background:
+        radial-gradient(circle, rgba(76, 225, 255, 0.22), transparent 60%);
+      transform: translateY(0);
+    }
+
+    #app[data-world="ai"] .label {
+      border-color: rgba(76, 225, 255, 0.22);
+      background: rgba(76, 225, 255, 0.08);
+    }
+
+    #app[data-world="ai"] .subtitle {
+      color: rgba(217, 247, 255, 0.76);
+    }
+
+    #app[data-world="music"] .content {
+      border-color: rgba(246, 125, 255, 0.24);
+      background:
+        radial-gradient(circle at 14% 18%, rgba(250, 165, 255, 0.16), transparent 28%),
+        linear-gradient(125deg, rgba(172, 74, 255, 0.12), transparent 42%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 40%),
+        rgba(20, 10, 32, 0.76);
+      box-shadow:
+        0 28px 90px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(246, 125, 255, 0.08),
+        0 0 40px rgba(216, 96, 255, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    #app[data-world="music"] .content::before {
+      background:
+        radial-gradient(circle at 12% 18%, rgba(250, 165, 255, 0.28), transparent 22%),
+        linear-gradient(90deg, transparent 0%, rgba(246, 125, 255, 0.08) 52%, transparent 100%);
+    }
+
+    #app[data-world="music"] .content::after {
+      inset: auto -16% -44% 26%;
+      height: 88%;
+      opacity: 0.56;
+      background:
+        radial-gradient(circle, rgba(246, 125, 255, 0.28), transparent 58%);
+      transform: translateY(0);
+    }
+
+    #app[data-world="music"] .label {
+      border-color: rgba(246, 125, 255, 0.22);
+      background:
+        linear-gradient(180deg, rgba(246, 125, 255, 0.14), rgba(255, 255, 255, 0.03)),
+        rgba(255, 255, 255, 0.02);
+      box-shadow: 0 0 22px rgba(246, 125, 255, 0.08);
+    }
+
+    #app[data-world="music"] .title {
+      text-shadow:
+        0 14px 30px rgba(0, 0, 0, 0.32),
+        0 0 24px rgba(246, 125, 255, 0.08);
+      letter-spacing: 0.02em;
+    }
+
+    #app[data-world="music"] .subtitle {
+      color: rgba(244, 215, 255, 0.78);
+    }
+
+    #app[data-world="music"] .linkline {
+      color: rgba(255, 223, 255, 0.88);
+    }
+
+    #app[data-world="music"] .linkline strong {
+      text-shadow: 0 0 18px rgba(246, 125, 255, 0.12);
+    }
+
+    .number-bg {
+      position: absolute;
+      inset-inline-end: 12px;
+      top: -12px;
+      font-family: "Assistant", sans-serif;
+      font-weight: 700;
+      font-size: clamp(7rem, 20vw, 13rem);
+      line-height: 0.8;
+      color: rgba(255, 255, 255, 0.05);
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .label {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.04);
+      font-family: "Assistant", sans-serif;
+      font-weight: 800;
+      font-size: 0.84rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .label-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 18px rgba(var(--accent-rgb), 0.74);
+    }
+
+    .title {
+      position: relative;
+      font-family: "Assistant", sans-serif;
+      font-weight: 800;
+      font-size: clamp(3.2rem, 9vw, 7.8rem);
+      line-height: 0.9;
+      letter-spacing: 0.01em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      text-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    .subtitle {
+      position: relative;
+      font-size: clamp(0.95rem, 1.3vw, 1.06rem);
+      color: var(--muted);
+      line-height: 1.6;
+      max-width: 40ch;
+      margin-bottom: 18px;
+    }
+
+    .linkline {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: rgba(255, 255, 255, 0.82);
+      font-size: 0.92rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .linkline strong {
+      color: #fff;
+    }
+
+    .linkline svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .nav {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    .nav-shell {
+      position: absolute;
+      inset: 0;
+    }
+
+    .nav-btn {
+      position: absolute;
+      top: 50%;
+      min-width: 64px;
+      width: 72px;
+      height: 72px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 0 18px;
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background:
+        radial-gradient(circle at 50% 18%, rgba(var(--accent-rgb), 0.16), transparent 60%),
+        rgba(9, 12, 18, 0.62);
+      backdrop-filter: blur(14px);
+      color: rgba(255, 255, 255, 0.92);
+      touch-action: manipulation;
+      pointer-events: auto;
+      transform: translateY(-50%);
+      transition:
+        transform 220ms ease,
+        border-color 220ms ease,
+        background 220ms ease,
+        opacity 220ms ease,
+        box-shadow 220ms ease;
+    }
+
+    .nav-btn:hover,
+    .nav-btn:focus-visible {
+      border-color: rgba(var(--accent-rgb), 0.36);
+      background:
+        radial-gradient(circle at 50% 18%, rgba(var(--accent-rgb), 0.26), transparent 62%),
+        rgba(14, 18, 28, 0.82);
+      box-shadow:
+        0 10px 24px rgba(0, 0, 0, 0.28),
+        0 0 0 1px rgba(var(--accent-rgb), 0.12);
+      outline: none;
+    }
+
+    #prev-btn {
+      left: clamp(18px, 2.8vw, 34px);
+    }
+
+    #prev-btn:hover,
+    #prev-btn:focus-visible {
+      transform: translate(-2px, -50%);
+    }
+
+    #next-btn {
+      right: clamp(18px, 2.8vw, 34px);
+    }
+
+    #next-btn:hover,
+    #next-btn:focus-visible {
+      transform: translate(2px, -50%);
+    }
+
+    .nav-btn svg {
+      width: 22px;
+      height: 22px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+
+    .nav-copy {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      font-family: "Assistant", sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-size: 0.82rem;
+      color: rgba(255, 255, 255, 0.84);
+    }
+
+    .dots {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.24);
+      transition: width 240ms ease, background 240ms ease;
+    }
+
+    .dot.active {
+      width: 36px;
+      background: var(--accent);
+    }
+
+    .socials {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .social {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(var(--dock-rgb), 0.16);
+      background:
+        linear-gradient(180deg, rgba(var(--dock-rgb), 0.1), rgba(255, 255, 255, 0.03)),
+        rgba(255, 255, 255, 0.02);
+      text-decoration: none;
+      color: rgba(255, 255, 255, 0.82);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.16);
+      transition:
+        transform 220ms ease,
+        border-color 220ms ease,
+        background 220ms ease,
+        box-shadow 220ms ease;
+    }
+
+    .social:hover,
+    .social:focus-visible {
+      transform: translateY(-2px);
+      border-color: rgba(var(--dock-rgb), 0.3);
+      background:
+        linear-gradient(180deg, rgba(var(--dock-rgb), 0.14), rgba(255, 255, 255, 0.08)),
+        rgba(255, 255, 255, 0.05);
+      box-shadow:
+        0 10px 22px rgba(0, 0, 0, 0.22),
+        0 0 0 1px rgba(var(--dock-rgb), 0.08);
+      outline: none;
+    }
+
+    .social-icon {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+      flex-shrink: 0;
+      transition:
+        fill 220ms ease,
+        filter 220ms ease;
+    }
+
+    .social[data-social="instagram"] .social-icon {
+      fill: #ff7a00;
+      filter: drop-shadow(0 0 8px rgba(255, 122, 0, 0.22));
+    }
+
+    .social[data-social="facebook"] .social-icon {
+      fill: #1877f2;
+      filter: drop-shadow(0 0 8px rgba(24, 119, 242, 0.22));
+    }
+
+    .social[data-social="youtube"] .social-icon {
+      fill: #ff0000;
+      filter: drop-shadow(0 0 8px rgba(255, 0, 0, 0.22));
+    }
+
+    .social[data-social="linkedin"] .social-icon {
+      fill: #0a66c2;
+      filter: drop-shadow(0 0 8px rgba(10, 102, 194, 0.22));
+    }
+
+    .social[data-social="tiktok"] .social-icon {
+      fill: #ffffff;
+      filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.2));
+    }
+
+    .social[data-social="whatsapp"] .social-icon {
+      fill: #25d366;
+      filter: drop-shadow(0 0 8px rgba(37, 211, 102, 0.24));
+    }
+
+    .social[data-social="email"] .social-icon {
+      fill: #f4c15d;
+      filter: drop-shadow(0 0 8px rgba(244, 193, 93, 0.22));
+    }
+
+    .social span {
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .transition-pill {
+      position: absolute;
+      left: 50%;
+      top: calc(var(--safe-top) + 26px);
+      transform: translateX(-50%);
+      z-index: 6;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(9, 12, 18, 0.62);
+      backdrop-filter: blur(12px);
+      font-family: "Assistant", sans-serif;
+      font-weight: 700;
+      font-size: 0.84rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.66);
+      opacity: 0;
+      transition: opacity 200ms ease;
+      pointer-events: none;
+    }
+
+    .transition-pill.active {
+      opacity: 1;
+    }
+
+    .transition-pill::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 14px rgba(var(--accent-rgb), 0.74);
+      animation: pulse 1s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(0.7); opacity: 0.42; }
+    }
+
+    html[dir="rtl"] .topbar,
+    html[dir="rtl"] .bottombar {
+      flex-direction: row-reverse;
+    }
+
+    html[dir="rtl"] .topbar-side {
+      flex-direction: row-reverse;
+    }
+
+    html[dir="rtl"] .brand,
+    html[dir="rtl"] .counter,
+    html[dir="rtl"] .label,
+    html[dir="rtl"] .title,
+    html[dir="rtl"] .subtitle,
+    html[dir="rtl"] .transition-pill,
+    html[dir="rtl"] .lang-btn,
+    html[dir="rtl"] .nav-copy {
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    html[dir="rtl"] .brand {
+      font-size: 1.06rem;
+    }
+
+    html[dir="rtl"] .counter {
+      flex-direction: row-reverse;
+      direction: rtl;
+      gap: 12px;
+    }
+
+    html[dir="rtl"] .counter strong {
+      direction: ltr;
+      unicode-bidi: isolate;
+    }
+
+    html[dir="rtl"] .content {
+      margin-inline-start: 0;
+      margin-inline-end: clamp(46px, 5vw, 84px);
+      text-align: right;
+    }
+
+    html[dir="rtl"] .label {
+      flex-direction: row-reverse;
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+
+    html[dir="rtl"] .title {
+      font-size: clamp(3rem, 8vw, 6.8rem);
+      line-height: 0.96;
+    }
+
+    html[dir="rtl"] .subtitle {
+      max-width: 32ch;
+      font-size: clamp(1rem, 1.45vw, 1.14rem);
+    }
+
+    html[dir="rtl"] .linkline {
+      direction: ltr;
+      unicode-bidi: isolate;
+      text-transform: none;
+      letter-spacing: 0.03em;
+    }
+
+    html[dir="rtl"] .socials {
+      justify-content: flex-end;
+      direction: ltr;
+    }
+
+    @media (max-width: 900px) {
+      .bottombar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .socials {
+        justify-content: flex-start;
+      }
+
+      .topbar-side {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+
+      html[dir="rtl"] .bottombar {
+        flex-direction: column;
+        align-items: flex-end;
+      }
+    }
+
+    @media (max-width: 700px) {
+      html,
+      body {
+        overflow-y: auto;
+      }
+
+      #app {
+        min-height: 100vh;
+        height: auto;
+      }
+
+      .chrome {
+        min-height: 100vh;
+        height: auto;
+      }
+
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .topbar-side {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .bottombar {
+        width: 100%;
+        align-items: center;
+      }
+
+      .nav {
+        inset: 0;
+        height: auto;
+      }
+
+      .nav-shell {
+        position: absolute;
+        inset: 0;
+      }
+
+      .nav-btn {
+        top: 44%;
+        width: 56px;
+        min-width: 56px;
+        height: 56px;
+        padding: 0;
+        border-radius: 18px;
+        transform: translateY(-50%);
+      }
+
+      #prev-btn {
+        left: 16px;
+      }
+
+      #next-btn {
+        right: 16px;
+      }
+
+      #prev-btn:hover,
+      #prev-btn:focus-visible,
+      #next-btn:hover,
+      #next-btn:focus-visible {
+        transform: translateY(-50%);
+      }
+
+      .nav-copy {
+        display: none;
+      }
+
+      .content {
+        max-width: 100%;
+        margin-inline-start: 0;
+        padding-bottom: 24px;
+      }
+
+      .title {
+        font-size: clamp(2.8rem, 16vw, 5rem);
+      }
+
+      .social span {
+        display: none;
+      }
+
+      .socials {
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-columns: 40px;
+        width: max-content;
+        margin: 0 auto;
+        gap: 6px;
+        justify-content: center;
+      }
+
+      .bottombar::before {
+        opacity: 1;
+      }
+
+      .social {
+        width: 40px;
+        height: 40px;
+        justify-content: center;
+        padding: 0;
+        background:
+          radial-gradient(circle at 50% 16%, rgba(var(--dock-rgb), 0.16), transparent 68%),
+          rgba(8, 12, 18, 0.42);
+        border-color: rgba(var(--dock-rgb), 0.2);
+        box-shadow:
+          0 10px 18px rgba(0, 0, 0, 0.2),
+          inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      }
+
+      html[dir="rtl"] .topbar {
+        align-items: flex-end;
+      }
+
+      html[dir="rtl"] .topbar-side {
+        flex-direction: row-reverse;
+      }
+
+      html[dir="rtl"] .content {
+        max-width: calc(100vw - 32px);
+        margin-inline-end: 0;
+        padding-inline: 18px;
+      }
+
+      html[dir="rtl"] .title {
+        font-size: clamp(2.2rem, 11vw, 3.8rem);
+        line-height: 0.92;
+      }
+
+      html[dir="rtl"] .subtitle {
+        max-width: 22ch;
+      }
+
+      html[dir="rtl"] .label {
+        font-size: 0.8rem;
+      }
+
+      html[dir="rtl"] .number-bg {
+        font-size: clamp(5rem, 22vw, 7.4rem);
+      }
+
+      html[dir="rtl"] #app[data-world="body"] .content {
+        width: min(100%, calc(100vw - 38px));
+        max-width: calc(100vw - 38px);
+        justify-self: end;
+        padding-inline-start: 28px;
+        padding-inline-end: 18px;
+        padding-block: 18px 20px;
+      }
+
+      html[dir="rtl"] #app[data-world="body"] .number-bg {
+        inset-inline-end: 14px;
+        top: 4px;
+        font-size: clamp(4.8rem, 18vw, 6.4rem);
+      }
+
+      html[dir="rtl"] #app[data-world="body"] .title {
+        font-size: clamp(2.7rem, 12.2vw, 4.2rem);
+        line-height: 0.9;
+      }
+
+      html[dir="rtl"] #app[data-world="body"] .subtitle {
+        max-width: none;
+        white-space: nowrap;
+        font-size: 0.86rem;
+        line-height: 1.25;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="bg-layer">
+      <div class="bg-image active" id="bg-a"></div>
+      <div class="bg-image" id="bg-b"></div>
+    </div>
+    <video class="transition-video" id="video-forward" muted playsinline preload="auto" disablepictureinpicture disableremoteplayback controlslist="nodownload nofullscreen noplaybackrate noremoteplayback" poster="videos/poster-body.png" src="videos/my.mp4"></video>
+    <video class="transition-video" id="video-reverse" muted playsinline preload="auto" disablepictureinpicture disableremoteplayback controlslist="nodownload nofullscreen noplaybackrate noremoteplayback" poster="videos/poster-ai.png" src="videos/my1.mp4"></video>
+    <video class="transition-video" id="video-music-forward" muted playsinline preload="auto" disablepictureinpicture disableremoteplayback controlslist="nodownload nofullscreen noplaybackrate noremoteplayback" poster="videos/poster-music.png" src="videos/1.mp4"></video>
+    <video class="transition-video" id="video-music-reverse" muted playsinline preload="auto" disablepictureinpicture disableremoteplayback controlslist="nodownload nofullscreen noplaybackrate noremoteplayback" poster="videos/poster-music-reverse.png" src="videos/1-reverse.mp4"></video>
+    <div class="overlay"></div>
+    <div class="grain"></div>
+    <div class="flash" id="flash"></div>
+
+    <div class="transition-pill" id="transition-pill">Transitioning</div>
+
+    <div class="chrome">
+      <header class="topbar">
+        <div class="brand" id="brand">Gabi Aharon</div>
+        <div class="topbar-side">
+          <div class="lang-switch" id="lang-switch" role="group" aria-label="Language">
+            <button class="lang-btn active" type="button" data-lang="en">EN</button>
+            <button class="lang-btn" type="button" data-lang="he">עב</button>
+          </div>
+          <div class="counter">
+            <strong id="counter">01 / 03</strong>
+            <span class="divider"></span>
+            <span id="category">Public Speaking</span>
+          </div>
+        </div>
+      </header>
+
+      <main class="stage">
+        <section class="content" id="content" tabindex="0" role="link" aria-label="Open current world">
+          <div class="number-bg" id="number-bg">01</div>
+          <div class="label">
+            <span class="label-dot"></span>
+            <span id="label">Public Speaking</span>
+          </div>
+          <h1 class="title" id="title">Body Language</h1>
+          <p class="subtitle" id="subtitle">Public Speaking &amp; Body Language</p>
+          <a class="linkline" id="main-link" href="https://www.gabrielaharon.com" target="_blank" rel="noopener noreferrer">
+            <strong id="domain">gabrielaharon.com</strong>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7 17 17 7M9 7h8v8"></path>
+            </svg>
+          </a>
+        </section>
+      </main>
+
+      <footer class="bottombar">
+        <div class="dots" id="dots"></div>
+        <div class="socials" id="socials"></div>
+      </footer>
+    </div>
+
+    <div class="nav" aria-label="Navigation">
+      <div class="nav-shell">
+        <button class="nav-btn" id="prev-btn" type="button" aria-label="Previous">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m15 6-6 6 6 6"></path>
+          </svg>
+          <span class="nav-copy">Prev</span>
+        </button>
+        <button class="nav-btn" id="next-btn" type="button" aria-label="Next">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m9 6 6 6-6 6"></path>
+          </svg>
+          <span class="nav-copy">Next</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const app = document.getElementById("app");
+    const urlParams = new URLSearchParams(window.location.search);
+    let currentLang = urlParams.get("lang") === "he" ? "he" : "en";
+    const uiCopy = {
+      en: {
+        brand: "Gabi Aharon",
+        transition: "Transitioning",
+        previous: "Prev",
+        next: "Next",
+        previousAria: "Previous",
+        nextAria: "Next",
+        openWorld: "Open current world",
+        language: "Language",
+        goTo: "Go to"
+      },
+      he: {
+        brand: "גבי אהרון",
+        transition: "מעבר",
+        previous: "הקודם",
+        next: "הבא",
+        previousAria: "הקודם",
+        nextAria: "הבא",
+        openWorld: "פתח את העולם הנוכחי",
+        language: "שפה",
+        goTo: "עבור אל"
+      }
+    };
+    const items = [
+      {
+        number: "01",
+        category: "Public Speaking",
+        categoryHe: "שפת גוף",
+        title: "Body Language",
+        titleHe: "שפת גוף",
+        subtitle: "Public Speaking & Body Language",
+        subtitleHe: "הרצאות על שפת גוף ועמידה מול קהל",
+        domain: "gabrielaharon.com",
+        url: "https://www.gabrielaharon.com",
+        image: "videos/poster-body.png",
+        accent: "#dba44a",
+        accentRgb: "219, 164, 74",
+        ambientRgb: "219, 164, 74",
+        dockRgb: "224, 181, 98",
+        theme: "body",
+        overlayLeft: "rgba(6, 7, 9, 0.82)",
+        overlayCenter: "rgba(8, 10, 12, 0.34)",
+        overlayRight: "rgba(4, 7, 10, 0.62)",
+        overlayBottom: "rgba(2, 4, 8, 0.8)"
+      },
+      {
+        number: "02",
+        category: "AI Projects",
+        categoryHe: "פרויקטי AI",
+        title: "AI Projects",
+        titleHe: "פרויקטי AI",
+        subtitle: "AI Projects & Tools I Built",
+        subtitleHe: "פרויקטי AI וכלים שבניתי",
+        domain: "myaiworld.xyz",
+        url: "https://myaiworld.xyz",
+        image: "videos/poster-ai.png",
+        accent: "#58d9ff",
+        accentRgb: "88, 217, 255",
+        ambientRgb: "88, 217, 255",
+        dockRgb: "76, 225, 255",
+        theme: "ai",
+        overlayLeft: "rgba(2, 12, 18, 0.72)",
+        overlayCenter: "rgba(8, 24, 34, 0.22)",
+        overlayRight: "rgba(2, 10, 18, 0.46)",
+        overlayBottom: "rgba(3, 14, 24, 0.58)"
+      },
+      {
+        number: "03",
+        category: "Music",
+        categoryHe: "מוזיקה",
+        title: "My Music",
+        titleHe: "המוזיקה שלי",
+        subtitle: "Music Creation",
+        subtitleHe: "יצירת מוזיקה",
+        domain: "gabismusic.xyz",
+        url: "https://gabismusic.xyz",
+        image: "videos/poster-music-reverse.png",
+        accent: "#f67dff",
+        accentRgb: "246, 125, 255",
+        ambientRgb: "236, 108, 255",
+        dockRgb: "250, 165, 255",
+        theme: "music",
+        overlayLeft: "rgba(20, 7, 34, 0.62)",
+        overlayCenter: "rgba(39, 14, 58, 0.18)",
+        overlayRight: "rgba(28, 10, 42, 0.3)",
+        overlayBottom: "rgba(30, 8, 44, 0.42)"
+      }
+    ];
+
+    const transitions = {
+      "0-1": "forward",
+      "1-0": "reverse",
+      "1-2": "musicForward",
+      "2-1": "musicReverse"
+    };
+
+    const transitionPlaybackRates = {
+      forward: 1.5,
+      reverse: 1.5,
+      musicForward: 1,
+      musicReverse: 1
+    };
+
+    const socials = [
+      {
+        label: "Instagram",
+        href: "https://www.instagram.com/gabi_aharon?igsh=b29oMGloNGxlcXB3",
+        icon: '<svg class="social-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Zm5 5.5A4.5 4.5 0 1 0 16.5 12 4.5 4.5 0 0 0 12 7.5Zm6.25-1.75a1.25 1.25 0 1 0 1.25 1.25 1.25 1.25 0 0 0-1.25-1.25ZM12 9a3 3 0 1 1-3 3 3 3 0 0 1 3-3Z"></path></svg>'
+      },
+      {
+        label: "Facebook",
+        href: "https://www.facebook.com/GabiBon",
+        icon: '<svg class="social-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 22v-8h2.8l.7-3h-3.5V9.1c0-.9.3-1.6 1.7-1.6H17V4.8c-.3 0-1.4-.1-2.7-.1-2.6 0-4.3 1.6-4.3 4.4V11H7v3h3.3v8Z"></path></svg>'
+      },
+      {
+        label: "YouTube",
+        href: "https://www.youtube.com/@GabiAharon1",
+        icon: '<svg class="social-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21.6 7.2a2.9 2.9 0 0 0-2-2C17.8 4.7 12 4.7 12 4.7s-5.8 0-7.6.5a2.9 2.9 0 0 0-2 2A30.1 30.1 0 0 0 2 12a30.1 30.1 0 0 0 .4 4.8 2.9 2.9 0 0 0 2 2c1.8.5 7.6.5 7.6.5s5.8 0 7.6-.5a2.9 2.9 0 0 0 2-2A30.1 30.1 0 0 0 22 12a30.1 30.1 0 0 0-.4-4.8ZM10 15.5v-7l6 3.5Z"></path></svg>'
+      },
+      {
+        label: "LinkedIn",
+        href: "https://linkedin.com/in/gabi-aharon",
+        icon: '<svg class="social-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 8.8H3.7V20h2.8ZM5.1 3A1.6 1.6 0 1 0 6.7 4.6 1.6 1.6 0 0 0 5.1 3ZM20 13.2c0-3.1-1.7-4.6-4-4.6a3.4 3.4 0 0 0-3 1.7V8.8h-2.8V20H13v-6c0-1.6.3-3.1 2.2-3.1s1.9 1.8 1.9 3.2V20H20Z"></path></svg>'
+      },
+      {
+        label: "TikTok",
+        href: "https://www.tiktok.com/@gabiaharon?_r=1&_t=ZS-93jXTlh4NY9",
+        icon: '<svg class="social-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 3c.3 2.4 1.7 4 4.1 4.3v2.5a6.7 6.7 0 0 1-4.1-1.4v6.1a5.8 5.8 0 1 1-5.8-5.8c.4 0 .8 0 1.1.1v2.7a3.2 3.2 0 1 0 2.1 3V3Z"></path></svg>'
+      },
+      {
+        label: "WhatsApp",
+        href: "https://wa.me/972546436659",
+        icon: '<svg class="social-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 12a8.5 8.5 0 1 1-15.8-4.3L3 22l4.5-1.7A8.5 8.5 0 1 1 20.5 12Zm-8.5-5.9a5.9 5.9 0 0 0-5 9l.3.5-.8 2.4 2.5-.8.5.3a5.9 5.9 0 1 0 2.5-11.4Zm3.3 7.5c-.2-.1-1.2-.6-1.4-.7s-.3-.1-.4.1-.5.7-.6.9-.2.2-.4.1a4.8 4.8 0 0 1-1.4-.9 5.3 5.3 0 0 1-1-1.3c-.1-.2 0-.3.1-.4l.3-.3.2-.4a.4.4 0 0 0 0-.4l-.7-1.6c-.2-.4-.3-.4-.4-.4h-.4a.7.7 0 0 0-.5.2 2.1 2.1 0 0 0-.7 1.5 3.6 3.6 0 0 0 .7 1.9 8.4 8.4 0 0 0 3.2 2.9c1.9.8 1.9.5 2.2.5a1.8 1.8 0 0 0 1.2-.8 1.3 1.3 0 0 0 .1-.8c-.1-.1-.2-.1-.4-.2Z"></path></svg>'
+      },
+      {
+        label: "Email",
+        href: "mailto:Gabiaharon@gmail.com",
+        icon: '<svg class="social-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6.8A1.8 1.8 0 0 1 4.8 5h14.4A1.8 1.8 0 0 1 21 6.8v10.4a1.8 1.8 0 0 1-1.8 1.8H4.8A1.8 1.8 0 0 1 3 17.2Zm1.6.5V8l7.4 5 7.4-5v-.7l-7.4 5Z"></path></svg>'
+      }
+    ];
+
+    const bgA = document.getElementById("bg-a");
+    const bgB = document.getElementById("bg-b");
+    const transitionVideos = {
+      forward: document.getElementById("video-forward"),
+      reverse: document.getElementById("video-reverse"),
+      musicForward: document.getElementById("video-music-forward"),
+      musicReverse: document.getElementById("video-music-reverse")
+    };
+    const flash = document.getElementById("flash");
+    const brand = document.getElementById("brand");
+    const content = document.getElementById("content");
+    const counter = document.getElementById("counter");
+    const category = document.getElementById("category");
+    const numberBg = document.getElementById("number-bg");
+    const label = document.getElementById("label");
+    const title = document.getElementById("title");
+    const subtitle = document.getElementById("subtitle");
+    const domain = document.getElementById("domain");
+    const mainLink = document.getElementById("main-link");
+    const dots = document.getElementById("dots");
+    const socialsWrap = document.getElementById("socials");
+    const transitionPill = document.getElementById("transition-pill");
+    const prevBtn = document.getElementById("prev-btn");
+    const nextBtn = document.getElementById("next-btn");
+    const langSwitch = document.getElementById("lang-switch");
+    const langButtons = Array.from(document.querySelectorAll(".lang-btn"));
+
+    let currentIndex = 0;
+    let activeBackground = 0;
+    let locked = false;
+    let revealTimer = null;
+    let endPoll = null;
+    let activeVideo = null;
+
+    function setBackground(element, image) {
+      element.style.backgroundImage = `url("${image}")`;
+    }
+
+    function hideAllVideos(except = null) {
+      Object.values(transitionVideos).forEach((video) => {
+        if (video === except) return;
+        video.pause();
+        video.classList.remove("visible");
+      });
+    }
+
+    function freezeVideoFrame(video, time = 0) {
+      if (!video) return;
+
+      const applyFrame = () => {
+        hideAllVideos(video);
+        video.pause();
+        applyPlaybackRate(video, 1);
+        try {
+          const duration = Number(video.duration || 0);
+          const targetTime = duration > 0
+            ? Math.min(Math.max(time, 0), Math.max(0, duration - 0.05))
+            : 0;
+          video.currentTime = targetTime;
+        } catch {}
+        video.classList.add("visible");
+      };
+
+      if (video.readyState >= 2) {
+        applyFrame();
+        return;
+      }
+
+      const handleLoaded = () => {
+        video.removeEventListener("loadeddata", handleLoaded);
+        applyFrame();
+      };
+
+      hideAllVideos(video);
+      video.classList.add("visible");
+      video.addEventListener("loadeddata", handleLoaded, { once: true });
+      video.load();
+    }
+
+    function applyPlaybackRate(video, rate = 1) {
+      if (!video) return;
+      video.defaultPlaybackRate = rate;
+      video.playbackRate = rate;
+    }
+
+    function showStaticFrame(index) {
+      const staticFrameByIndex = {
+        0: { key: "forward", time: 0 },
+        1: { key: "reverse", time: 0 },
+        2: { key: "musicReverse", time: 0 }
+      };
+      const config = staticFrameByIndex[index];
+      if (!config) {
+        hideAllVideos();
+        return;
+      }
+      freezeVideoFrame(transitionVideos[config.key], config.time);
+    }
+
+    function itemText(item) {
+      if (currentLang === "he") {
+        return {
+          category: item.categoryHe || item.category,
+          title: item.titleHe || item.title,
+          subtitle: item.subtitleHe || item.subtitle
+        };
+      }
+      return {
+        category: item.category,
+        title: item.title,
+        subtitle: item.subtitle
+      };
+    }
+
+    function applyLanguageChrome() {
+      const copy = uiCopy[currentLang];
+      document.documentElement.lang = currentLang === "he" ? "he" : "en";
+      document.documentElement.dir = currentLang === "he" ? "rtl" : "ltr";
+      app.dataset.lang = currentLang;
+      document.title = copy.brand;
+      brand.textContent = copy.brand;
+      transitionPill.textContent = copy.transition;
+      content.setAttribute("aria-label", copy.openWorld);
+      prevBtn.setAttribute("aria-label", copy.previousAria);
+      nextBtn.setAttribute("aria-label", copy.nextAria);
+      prevBtn.querySelector(".nav-copy").textContent = copy.previous;
+      nextBtn.querySelector(".nav-copy").textContent = copy.next;
+      langSwitch.setAttribute("aria-label", copy.language);
+      langButtons.forEach((button) => {
+        button.classList.toggle("active", button.dataset.lang === currentLang);
+      });
+    }
+
+    function buildDots() {
+      items.forEach((item, index) => {
+        const button = document.createElement("button");
+        button.className = "dot" + (index === 0 ? " active" : "");
+        button.type = "button";
+        button.setAttribute("aria-label", `${uiCopy[currentLang].goTo} ${itemText(item).title}`);
+        button.addEventListener("click", () => goTo(index));
+        dots.appendChild(button);
+      });
+    }
+
+    function buildSocials() {
+      socials.forEach((item) => {
+        const socialLabel = currentLang === "he" && item.label === "Email" ? "אימייל" : item.label;
+        const socialKey = item.label.toLowerCase().replace(/[^a-z]/g, "");
+        const link = document.createElement("a");
+        link.className = "social";
+        link.dataset.social = socialKey;
+        link.href = item.href;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.setAttribute("aria-label", socialLabel);
+        link.innerHTML = `${item.icon}<span>${socialLabel}</span>`;
+        socialsWrap.appendChild(link);
+      });
+    }
+
+    function updateDots(index) {
+      dots.querySelectorAll(".dot").forEach((dot, dotIndex) => {
+        dot.classList.toggle("active", dotIndex === index);
+      });
+    }
+
+    function updateTheme(item) {
+      app.dataset.world = item.theme || "";
+      document.documentElement.style.setProperty("--accent", item.accent);
+      document.documentElement.style.setProperty("--accent-rgb", item.accentRgb);
+      document.documentElement.style.setProperty("--ambient-rgb", item.ambientRgb || item.accentRgb);
+      document.documentElement.style.setProperty("--dock-rgb", item.dockRgb || item.accentRgb);
+      document.documentElement.style.setProperty("--overlay-left", item.overlayLeft || "rgba(2, 4, 8, 0.9)");
+      document.documentElement.style.setProperty("--overlay-center", item.overlayCenter || "rgba(2, 4, 8, 0.42)");
+      document.documentElement.style.setProperty("--overlay-right", item.overlayRight || "rgba(2, 4, 8, 0.68)");
+      document.documentElement.style.setProperty("--overlay-bottom", item.overlayBottom || "rgba(0, 0, 0, 0.82)");
+    }
+
+    function render(index, animate = true) {
+      const item = items[index];
+      const localized = itemText(item);
+      currentIndex = index;
+      content.getAnimations().forEach((animation) => animation.cancel());
+      updateTheme(item);
+      counter.textContent = `${item.number} / ${String(items.length).padStart(2, "0")}`;
+      category.textContent = localized.category;
+      numberBg.textContent = item.number;
+      label.textContent = localized.category;
+      title.textContent = localized.title;
+      subtitle.textContent = localized.subtitle;
+      domain.textContent = item.domain;
+      mainLink.href = item.url;
+      updateDots(index);
+
+      if (!animate) return;
+
+      content.style.opacity = "0";
+      content.style.transform = "translateY(22px)";
+      requestAnimationFrame(() => {
+        content.style.opacity = "1";
+        content.style.transform = "translateY(0)";
+      });
+    }
+
+    function hideContent() {
+      content.getAnimations().forEach((animation) => animation.cancel());
+      content.style.opacity = "0";
+      content.style.transform = "translateY(18px)";
+    }
+
+    function swapBackground(nextIndex) {
+      const nextItem = items[nextIndex];
+      const incoming = activeBackground === 0 ? bgB : bgA;
+      const outgoing = activeBackground === 0 ? bgA : bgB;
+      setBackground(incoming, nextItem.image);
+      incoming.classList.add("active");
+      outgoing.classList.remove("active");
+      activeBackground = activeBackground === 0 ? 1 : 0;
+    }
+
+    function clearTransitionTimers() {
+      if (revealTimer) {
+        window.clearTimeout(revealTimer);
+        revealTimer = null;
+      }
+      if (endPoll) {
+        window.clearInterval(endPoll);
+        endPoll = null;
+      }
+    }
+
+    function finishVideoTransition(nextIndex) {
+      clearTransitionTimers();
+      if (activeVideo) {
+        activeVideo.pause();
+        activeVideo = null;
+      }
+      transitionPill.classList.remove("active");
+      locked = false;
+      if (currentIndex !== nextIndex) {
+        revealDestination(nextIndex);
+      }
+      showStaticFrame(nextIndex);
+    }
+
+    function revealDestination(nextIndex) {
+      if (currentIndex === nextIndex) return;
+      swapBackground(nextIndex);
+      render(nextIndex, true);
+    }
+
+    function pollForVideoEnd(nextIndex) {
+      let lastTime = -1;
+      let stallCount = 0;
+      endPoll = window.setInterval(() => {
+        if (!activeVideo || !activeVideo.duration) return;
+        if (activeVideo.currentTime >= activeVideo.duration - 0.08 || activeVideo.ended) {
+          finishVideoTransition(nextIndex);
+          return;
+        }
+        if (activeVideo.currentTime === lastTime) {
+          stallCount += 1;
+          if (stallCount >= 20) finishVideoTransition(nextIndex);
+        } else {
+          stallCount = 0;
+        }
+        lastTime = activeVideo.currentTime;
+      }, 100);
+    }
+
+    function playVideoTransition(nextIndex, transitionKey) {
+      const video = transitionVideos[transitionKey];
+      if (!video) return false;
+      const playbackRate = transitionPlaybackRates[transitionKey] || 1;
+
+      transitionPill.classList.add("active");
+      clearTransitionTimers();
+      activeVideo = video;
+      hideAllVideos(video);
+
+      content.animate(
+        [
+          { opacity: 1, transform: "translateY(0)" },
+          { opacity: 0, transform: "translateY(18px)" }
+        ],
+        { duration: 240, easing: "ease-in" }
+      );
+      hideContent();
+
+      video.classList.add("visible");
+      video.pause();
+      applyPlaybackRate(video, playbackRate);
+
+      const startPlayback = () => {
+        if (activeVideo !== video) return;
+        hideAllVideos(video);
+        video.classList.add("visible");
+        applyPlaybackRate(video, playbackRate);
+        video.currentTime = 0;
+        applyPlaybackRate(video, playbackRate);
+        const playPromise = video.play();
+        if (!playPromise) {
+          finishVideoTransition(nextIndex);
+          return;
+        }
+
+        playPromise.then(() => {
+          if (activeVideo !== video) return;
+          applyPlaybackRate(video, playbackRate);
+          pollForVideoEnd(nextIndex);
+          if (video.duration > 0) {
+            revealTimer = window.setTimeout(() => {
+              revealDestination(nextIndex);
+            }, Math.max(0, ((video.duration - 2) / playbackRate) * 1000));
+          }
+        }).catch(() => {
+          finishVideoTransition(nextIndex);
+        });
+      };
+
+      if (video.readyState >= 3) {
+        applyPlaybackRate(video, playbackRate);
+        startPlayback();
+        return true;
+      }
+
+      const handleCanPlay = () => {
+        video.removeEventListener("canplay", handleCanPlay);
+        video.removeEventListener("error", handleError);
+        applyPlaybackRate(video, playbackRate);
+        startPlayback();
+      };
+      const handleError = () => {
+        video.removeEventListener("canplay", handleCanPlay);
+        video.removeEventListener("error", handleError);
+        finishVideoTransition(nextIndex);
+      };
+
+      video.addEventListener("canplay", handleCanPlay, { once: true });
+      video.addEventListener("error", handleError, { once: true });
+      video.load();
+      return true;
+    }
+
+    async function goTo(nextIndex) {
+      if (locked || nextIndex === currentIndex || nextIndex < 0 || nextIndex >= items.length) return;
+      locked = true;
+      const transitionKey = transitions[`${currentIndex}-${nextIndex}`];
+
+      if (transitionKey) {
+        const started = playVideoTransition(nextIndex, transitionKey);
+        if (started) return;
+      }
+
+      locked = true;
+      transitionPill.classList.add("active");
+      hideAllVideos();
+      flash.animate(
+        [{ opacity: 0 }, { opacity: 0.8, offset: 0.4 }, { opacity: 0 }],
+        { duration: 620, easing: "ease-out" }
+      );
+      content.animate(
+        [
+          { opacity: 1, transform: "translateY(0)" },
+          { opacity: 0, transform: "translateY(18px)" }
+        ],
+        { duration: 240, easing: "ease-in" }
+      );
+      hideContent();
+
+      window.setTimeout(() => {
+        swapBackground(nextIndex);
+        render(nextIndex, true);
+        showStaticFrame(nextIndex);
+      }, 180);
+
+      window.setTimeout(() => {
+        transitionPill.classList.remove("active");
+        locked = false;
+      }, 700);
+    }
+
+    function openCurrent() {
+      window.open(items[currentIndex].url, "_blank", "noopener,noreferrer");
+    }
+
+    function getWrappedIndex(delta) {
+      return (currentIndex + delta + items.length) % items.length;
+    }
+
+    function getLeftNavIndex() {
+      return currentLang === "he" ? getWrappedIndex(1) : getWrappedIndex(-1);
+    }
+
+    function getRightNavIndex() {
+      return currentLang === "he" ? getWrappedIndex(-1) : getWrappedIndex(1);
+    }
+
+    function rebuildStaticUi() {
+      dots.innerHTML = "";
+      socialsWrap.innerHTML = "";
+      buildDots();
+      buildSocials();
+      render(currentIndex, false);
+    }
+
+    function setLanguage(lang) {
+      if (!uiCopy[lang] || lang === currentLang) return;
+      currentLang = lang;
+      applyLanguageChrome();
+      rebuildStaticUi();
+    }
+
+    content.addEventListener("click", (event) => {
+      if (!event.target.closest("a")) openCurrent();
+    });
+
+    content.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        openCurrent();
+      }
+    });
+
+    prevBtn.addEventListener("click", () => goTo(getLeftNavIndex()));
+    nextBtn.addEventListener("click", () => goTo(getRightNavIndex()));
+    langButtons.forEach((button) => {
+      button.addEventListener("click", () => setLanguage(button.dataset.lang));
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft") goTo(getLeftNavIndex());
+      if (event.key === "ArrowRight") goTo(getRightNavIndex());
+    });
+
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    document.addEventListener("touchstart", (event) => {
+      if (!event.touches[0]) return;
+      touchStartX = event.touches[0].clientX;
+      touchStartY = event.touches[0].clientY;
+    }, { passive: true });
+
+    document.addEventListener("touchend", (event) => {
+      if (!event.changedTouches[0]) return;
+      const deltaX = touchStartX - event.changedTouches[0].clientX;
+      const deltaY = touchStartY - event.changedTouches[0].clientY;
+      if (Math.abs(deltaX) > 40 && Math.abs(deltaY) < 60) {
+        if (deltaX > 0) goTo((currentIndex + 1) % items.length);
+        if (deltaX < 0) goTo((currentIndex - 1 + items.length) % items.length);
+      }
+    }, { passive: true });
+
+    setBackground(bgA, items[0].image);
+    applyLanguageChrome();
+    buildDots();
+    buildSocials();
+    render(0, false);
+    Object.values(transitionVideos).forEach((video) => {
+      video.muted = true;
+      video.controls = false;
+      video.removeAttribute("controls");
+      video.disablePictureInPicture = true;
+      video.load();
+    });
+    showStaticFrame(0);
+
+    const debugParams = urlParams;
+    if (debugParams.get("debugTransition") === "1") {
+      window.setTimeout(() => {
+        goTo(1);
+      }, 800);
+    }
+    if (debugParams.get("debugReverse") === "1") {
+      window.setTimeout(() => {
+        goTo(1);
+      }, 800);
+      window.setTimeout(() => {
+        goTo(0);
+      }, 9800);
+    }
+    if (debugParams.get("debugMusic") === "1") {
+      window.setTimeout(() => {
+        goTo(1);
+      }, 800);
+      window.setTimeout(() => {
+        goTo(2);
+      }, 9800);
+    }
+    if (debugParams.get("debugMusicReverse") === "1") {
+      window.setTimeout(() => {
+        goTo(1);
+      }, 800);
+      window.setTimeout(() => {
+        goTo(2);
+      }, 9800);
+      window.setTimeout(() => {
+        goTo(1);
+      }, 14800);
+    }
+  </script>
+</body>
+</html>
